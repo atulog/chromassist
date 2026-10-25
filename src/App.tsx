@@ -5,6 +5,7 @@ import Controls from "@/components/Controls";
 import Readout from "@/components/Readout";
 import ContrastLab from "@/components/ContrastLab";
 import Docs from "@/components/Docs";
+import LandingPage from "@/components/LandingPage";
 import { closestName, describeColor, type CVDType, type RGB, type ViewMode } from "@/lib/color";
 import { createRecognizer, speak, stopSpeaking, type Recognizer } from "@/lib/voice";
 import { describeImageWithAI } from "@/lib/ai";
@@ -33,6 +34,7 @@ function makeTestImage(): string {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 export default function App() {
+  const [showLanding, setShowLanding] = useState(true);
   const [tab, setTab] = useState<Tab>("studio");
   const [src, setSrc] = useState<string | null>(null);
   const [mode, setMode] = useState<ViewMode>("simulate");
@@ -99,6 +101,9 @@ export default function App() {
     finally { setAiLoading(false); }
   };
   const micSupported = useMemo(() => typeof window !== "undefined" && !!((window as any).SpeechRecognition || (window as any).webkitSpeechRecognition), []);
+    if (showLanding) {
+    return <LandingPage onEnterApp={() => setShowLanding(false)} />;
+  }
   return (
     <div className="flex min-h-full flex-col">
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) loadFile(f); e.target.value = ""; }} />
