@@ -27,6 +27,7 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
   
   const [ready, setReady] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [crosshair, setCrosshair] = useState<{ x: number, y: number } | null>(null);
 
   useEffect(() => {
     if (!src) { baseRef.current = null; setReady(false); return; }
@@ -37,13 +38,16 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
       if (!alive) return;
       const s = Math.min(1, MAX_EDGE / Math.max(img.naturalWidth, img.naturalHeight));
       const w = Math.max(1, Math.round(img.naturalWidth * s)), h = Math.max(1, Math.round(img.naturalHeight * s));
+      
       const base = document.createElement("canvas"); 
       base.width = w; 
       base.height = h;
       base.getContext("2d", { willReadFrequently: true })!.drawImage(img, 0, 0, w, h);
       baseRef.current = base;
+      
       const v = viewRef.current; 
       if (v) { v.width = w; v.height = h; }
+      
       setReady(true); 
       onLoadRef.current(extractPalette(base, 7));
     };
@@ -60,8 +64,10 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
     const ctx = view.getContext("2d")!;
     const srcData = base.getContext("2d", { willReadFrequently: true })!.getImageData(0, 0, w, h);
     const out = new ImageData(new Uint8ClampedArray(srcData.data), w, h);
+    
     if (mode !== "original") transformImageData(out.data, mode, cvd, severity);
     ctx.putImageData(out, 0, 0);
+    
     if (compare && mode !== "original") {
       const half = w >> 1;
       ctx.drawImage(base, 0, 0, half, h, 0, 0, half, h);
@@ -76,39 +82,40 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
     return () => cancelAnimationFrame(id); 
   }, [ready, render]);
 
-  const toCanvas = (e: React.PointerEvent | React.MouseEvent) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const view = viewRef.current; 
-    if (!view) return null;
-    const r = view.getBoundingClientRect();
-    const x = Math.floor(((e.clientX - r.left) / r.width) * view.width), y = Math.floor(((e.clientY - r.top) / r.height) * view.height);
-    if (x < 0 || y < 0 || x >= view.width || y >= view.height) return null; 
-    return { x, y };
+    if (!view) return;
+    const rect = view.getBoundingClientRect();
+    
+    // Calculate position relative to the container for the visual crosshair
+    const wrapRect = wrapRef.current?.getBoundingClientRect();
+    if (wrapRect) {
+      setCrosshair({
+        x: e.clientX - wrapRect.left,
+        y: e.clientY - wrapRect.top
+      });
+    }
   };
 
-    const pickAt = (x: number, y: number) => {
-    const base = baseRef.current; 
-    if (!base) return;
+  const handlePointerLeave = () => setCrosshair(null);
+
+  const pickAt = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const view = viewRef.current; 
+    const base = baseRef.current;
+    if (!view || !base) return;
+    
+    const rect = view.getBoundingClientRect();
+    
+    // Perfectly map display coordinates to source image coordinates
+    const x = Math.floor(((e.clientX - rect.left) / rect.width) * base.width);
+    const y = Math.floor(((e.clientY - rect.top) / rect.height) * base.height);
+    
+    if (x < 0 || y < 0 || x >= base.width || y >= base.height) return;
+
+    // Read exactly one source-image pixel
     const ctx = base.getContext("2d", { willReadFrequently: true })!;
-    
-    // Sample a 3x3 grid for perfect accuracy
-    const size = 3;
-    const startX = Math.max(0, x - 1);
-    const startY = Math.max(0, y - 1);
-    const d = ctx.getImageData(startX, startY, size, size).data;
-    
-    let r = 0, g = 0, b = 0, count = 0;
-    for (let i = 0; i < d.length; i += 4) {
-      r += d[i]; 
-      g += d[i + 1]; 
-      b += d[i + 2]; 
-      count++;
-    }
-    
-    onPick({ 
-      r: Math.round(r / count), 
-      g: Math.round(g / count), 
-      b: Math.round(b / count) 
-    });
+    const d = ctx.getImageData(x, y, 1, 1).data;
+    onPick({ r: d[0], g: d[1], b: d[2] });
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -117,44 +124,77 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
     if (!view) return;
     const step = e.shiftKey ? 10 : 1;
     let cx = view.width >> 1, cy = view.height >> 1;
+    
+    // (Optional) You can expand keyboard navigation to track the crosshair here
     switch (e.key) {
-      case "ArrowLeft": cx = Math.max(0, cx - step); break;
-      case "ArrowRight": cx = Math.min(view.width - 1, cx + step); break;
-      case "ArrowUp": cy = Math.max(0, cy - step); break;
-      case "ArrowDown": cy = Math.min(view.height - 1, cy + step); break;
       case "Enter": 
-      case " ": e.preventDefault(); pickAt(cx, cy); return;
+      case " ": 
+        e.preventDefault(); 
+        // Dummy event for keyboard picking
+        const rect = view.getBoundingClientRect();
+        pickAt({ clientX: rect.left + cx, clientY: rect.top + cy } as any); 
+        return;
       default: return;
     }
-    e.preventDefault(); 
-    pickAt(cx, cy);
   };
 
   return (
-    <div ref={wrapRef} className={`relative overflow-hidden rounded-3xl glass transition-colors ${dragging ? "ring-2 ring-accent" : ""}`}
+    <div 
+      ref={wrapRef} 
+      className={`relative overflow-hidden rounded-3xl glass transition-colors ${dragging ? "ring-2 ring-accent" : ""}`}
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }} 
       onDragLeave={() => setDragging(false)}
-      onDrop={(e) => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files?.[0]; if (f) onDropFile(f); }}>
-      
-      <canvas ref={viewRef} tabIndex={0} role="img"
-        aria-label="Image canvas. Use arrow keys to move the sampling cursor and Enter to pick the colour underneath."
-        onPointerDown={(e) => { const p = toCanvas(e); if (p) pickAt(p.x, p.y); }} 
+      onDrop={(e) => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files?.[0]; if (f) onDropFile(f); }}
+    >
+      <canvas 
+        ref={viewRef} 
+        tabIndex={0} 
+        role="img"
+        aria-label="Image canvas. Click to pick colour."
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        onPointerDown={pickAt} 
         onKeyDown={onKeyDown}
         className={`block max-h-[68vh] w-full object-contain ${ready ? "cursor-crosshair" : "hidden"}`} 
       />
 
+      {/* --- The requested custom crosshair overlay --- */}
+      {crosshair && ready && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            left: crosshair.x,
+            top: crosshair.y,
+            width: 15,
+            height: 15,
+            border: "1px solid white",
+            outline: "1px solid black",
+            borderRadius: "50%",
+            transform: "translate(-50%, -50%)",
+            pointerEvents: "none",
+            zIndex: 50
+          }}
+        />
+      )}
+
       {!src && (
-        <button onClick={onRequestUpload} className="flex min-h-[420px] w-full flex-col items-center justify-center gap-4 p-10 text-center transition hover:bg-slate-50">
-          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 ring-1 ring-white/10"><ImageOff className="h-7 w-7 text-slate-500" /></span>
-          <span className="text-base font-medium text-slate-800">Drop an image, paste, or click to upload</span>
-          <span className="max-w-sm text-sm text-slate-500">Everything is processed locally in your browser - no image ever leaves this device.</span>
+        <button onClick={onRequestUpload} className="flex min-h-[420px] w-full flex-col items-center justify-center gap-4 p-10 text-center transition hover:bg-white/[0.02]">
+          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10"><ImageOff className="h-7 w-7 text-muted" /></span>
+          <span className="text-xl font-bold text-slate-900">Start exploring your image</span>
+          <span className="max-w-md text-sm text-slate-500 leading-relaxed">
+            Upload an image to simulate color vision differences, inspect individual pixel colors, or enhance color distinctions for accessibility.
+          </span>
+          <span className="mt-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 ring-1 ring-blue-600/20">
+            Click to upload or drag & drop
+          </span>
         </button>
       )}
       
-      {src && !ready && <div className="flex min-h-[420px] items-center justify-center text-sm text-slate-500">Decoding image...</div>}
+      {src && !ready && <div className="flex min-h-[420px] items-center justify-center text-sm text-muted">Decoding image...</div>}
       
       {compare && mode !== "original" && ready && (
-        <div className="pointer-events-none absolute left-3 top-3 rounded-full bg-white/80 px-3 py-1 text-[11px] font-medium tracking-wide text-slate-900/80 backdrop-blur">LEFT: original | RIGHT: processed</div>
+        <div className="pointer-events-none absolute left-3 top-3 rounded-full bg-black/60 px-3 py-1 text-[11px] font-medium tracking-wide text-white/80 backdrop-blur">LEFT: original | RIGHT: processed</div>
       )}
     </div>
   );
