@@ -144,7 +144,7 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
       />
 
       {!src && (
-        <button onClick={onRequestUpload} className="flex min-h-[420px] w-full flex-col items-center justify-center gap-4 p-10 text-center transition hover:bg-white/[0.02]">
+        <button onClick={onRequestUpload} className="flex min-h-[420px] w-full flex-col items-center justify-center gap-4 p-10 text-center transition hover:bg-slate-50">
           <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 ring-1 ring-white/10"><ImageOff className="h-7 w-7 text-slate-500" /></span>
           <span className="text-base font-medium text-slate-800">Drop an image, paste, or click to upload</span>
           <span className="max-w-sm text-sm text-slate-500">Everything is processed locally in your browser - no image ever leaves this device.</span>
