@@ -3,15 +3,15 @@ import { Check, Copy, Droplets } from "lucide-react";
 import { closestName, contrastRatio, describeColor, hexOf, hslOf, readableOn, rgbOf, simulateRgb, type CVDType, type RGB } from "@/lib/color";
 type Props = { picked: RGB|null; cvd: CVDType; severity: number; palette: RGB[]; onSelect:(rgb:RGB)=>void };
 function Chip({ label, value }: { label: string; value: string }) {
-  return <div className="rounded-xl border border-white/8 bg-white/[0.025] px-3 py-2"><div className="text-[10px] uppercase tracking-[0.12em] text-muted">{label}</div><div className="mt-0.5 font-mono text-xs text-zinc-200">{value}</div></div>;
+  return <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2"><div className="text-[10px] uppercase tracking-[0.12em] text-slate-500">{label}</div><div className="mt-0.5 font-mono text-xs text-slate-800">{value}</div></div>;
 }
 export default function Readout({ picked, cvd, severity, palette, onSelect }: Props) {
   const [copied, setCopied] = useState(false);
   if (!picked) {
     return (
       <section className="rounded-3xl glass p-5">
-        <h2 className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Detected colour</h2>
-        <p className="mt-3 text-sm leading-relaxed text-muted">Click anywhere on the image - or move the keyboard cursor with the arrow keys and press Enter - to identify a colour.</p>
+        <h2 className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Detected colour</h2>
+        <p className="mt-3 text-sm leading-relaxed text-slate-500">Click anywhere on the image - or move the keyboard cursor with the arrow keys and press Enter - to identify a colour.</p>
       </section>
     );
   }
@@ -23,8 +23,8 @@ export default function Readout({ picked, cvd, severity, palette, onSelect }: Pr
   return (
     <section className="animate-rise rounded-3xl glass p-5">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Detected colour</h2>
-        <button onClick={copy} className="flex items-center gap-1.5 rounded-lg border border-white/10 px-2 py-1 text-[11px] text-zinc-300 transition hover:bg-white/5">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Detected colour</h2>
+        <button onClick={copy} className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-2 py-1 text-[11px] text-slate-600 transition hover:bg-slate-100">
           {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}{copied?"Copied":"Copy"}
         </button>
       </div>
@@ -37,20 +37,20 @@ export default function Readout({ picked, cvd, severity, palette, onSelect }: Pr
           <span className="font-mono text-sm font-semibold tracking-tight">{hexOf(seen)}</span>
         </div>
       </div>
-      <p className="mt-3 text-sm text-zinc-300"><span className="font-semibold text-white">{name.name}</span><span className="text-muted"> | {seenName.name} under this profile</span></p>
+      <p className="mt-3 text-sm text-slate-600"><span className="font-semibold text-slate-900">{name.name}</span><span className="text-slate-500"> | {seenName.name} under this profile</span></p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Chip label="RGB" value={rgbOf(picked)} />
         <Chip label="HSL" value={`${Math.round(hsl.h)}Ã‚Â deg ${Math.round(hsl.s*100)}% ${Math.round(hsl.l*100)}%`} />
         <Chip label="On white" value={`${vsWhite.toFixed(2)}:1`} />
         <Chip label="On black" value={`${vsBlack.toFixed(2)}:1`} />
       </div>
-      <button onClick={()=>onSelect(picked)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 py-2 text-xs font-medium text-zinc-300 transition hover:bg-white/5">
+      <button onClick={()=>onSelect(picked)} className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100">
         <Droplets className="h-3.5 w-3.5" />Send to contrast lab
       </button>
-      <p className="mt-3 border-t border-white/8 pt-3 text-[12px] leading-relaxed text-muted">{describeColor(picked, cvd, severity)}</p>
+      <p className="mt-3 border-t border-slate-200 pt-3 text-[12px] leading-relaxed text-slate-500">{describeColor(picked, cvd, severity)}</p>
       {palette.length > 0 && (
         <div className="mt-4">
-          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Dominant palette</h3>
+          <h3 className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dominant palette</h3>
           <div className="flex gap-1.5">
             {palette.map((c, i) => (
               <button key={`${hexOf(c)}-${i}`} onClick={()=>onSelect(c)} title={hexOf(c)} aria-label={`Select ${hexOf(c)}`} className="h-9 flex-1 rounded-lg ring-1 ring-white/10 transition hover:scale-105 hover:ring-white/40" style={{ backgroundColor: hexOf(c) }} />

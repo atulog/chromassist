@@ -3,8 +3,8 @@ export default function Docs() {
     <article className="mx-auto max-w-3xl space-y-6 rounded-3xl glass p-6 sm:p-10">
       <header>
         <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">Mini-project documentation</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-white">ChromAssist - AI-Based Colour Vision Assistance System</h1>
-        <p className="mt-2 text-sm text-muted">A browser-native assistive tool for colour-vision deficiency (CVD), built with React, Canvas and the Web Speech API.</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-900">ChromAssist - AI-Based Colour Vision Assistance System</h1>
+        <p className="mt-2 text-sm text-slate-500">A browser-native assistive tool for colour-vision deficiency (CVD), built with React, Canvas and the Web Speech API.</p>
       </header>
       <Section title="1. Abstract">Roughly 1 in 12 men and 1 in 200 women live with a colour-vision deficiency. Everyday interfaces - charts, maps, status badges, wiring, food doneness - routinely encode meaning in hue alone. ChromAssist gives these users three capabilities in a single zero-install page: simulation, enhancement, and identification.</Section>
       <Section title="2. Problem statement">Existing accessibility tooling is fragmented. Browser devtools simulate CVD but cannot help a user reading a photograph. Screen readers announce alt-text but not colour. Physical colour probes are single purpose. ChromAssist unifies simulation, correction and identification behind one interaction model, and runs entirely on-device.</Section>
@@ -33,5 +33,5 @@ export default function Docs() {
   );
 }
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
-  return <section><h2 className="mb-2 text-base font-semibold text-white">{title}</h2><div className="text-sm leading-relaxed text-zinc-300">{children}</div></section>;
+  return <section><h2 className="mb-2 text-base font-semibold text-slate-900">{title}</h2><div className="text-sm leading-relaxed text-slate-600">{children}</div></section>;
 }

@@ -12,26 +12,18 @@
   :root { color-scheme: dark; }
   html, body, #root { height: 100%; }
   body {
-    margin: 0; background: var(--color-void); color: #e4e4ec;
+    margin: 0; background: var(--color-void); color: #0f172a;
     font-family: var(--font-sans); -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
-  body::before {
-    content: ""; position: fixed; inset: -25%; z-index: -1; pointer-events: none;
-    background:
-      radial-gradient(45rem 45rem at 12% -10%, rgba(124,92,255,.22), transparent 60%),
-      radial-gradient(40rem 40rem at 92% 2%, rgba(34,211,238,.14), transparent 60%),
-      radial-gradient(55rem 55rem at 50% 115%, rgba(255,79,163,.1), transparent 60%);
-    filter: blur(12px);
-  }
+  
   ::selection { background: rgba(124,92,255,.4); }
   :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
 }
 @utility glass {
-  background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
-  border: 1px solid rgba(255,255,255,.075);
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
 @keyframes rise { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
 @utility animate-rise { animation: rise .45s cubic-bezier(.2,.8,.2,1) both; }

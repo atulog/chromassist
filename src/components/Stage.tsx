@@ -145,16 +145,16 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
 
       {!src && (
         <button onClick={onRequestUpload} className="flex min-h-[420px] w-full flex-col items-center justify-center gap-4 p-10 text-center transition hover:bg-white/[0.02]">
-          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10"><ImageOff className="h-7 w-7 text-muted" /></span>
-          <span className="text-base font-medium text-zinc-200">Drop an image, paste, or click to upload</span>
-          <span className="max-w-sm text-sm text-muted">Everything is processed locally in your browser - no image ever leaves this device.</span>
+          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100 ring-1 ring-white/10"><ImageOff className="h-7 w-7 text-slate-500" /></span>
+          <span className="text-base font-medium text-slate-800">Drop an image, paste, or click to upload</span>
+          <span className="max-w-sm text-sm text-slate-500">Everything is processed locally in your browser - no image ever leaves this device.</span>
         </button>
       )}
       
-      {src && !ready && <div className="flex min-h-[420px] items-center justify-center text-sm text-muted">Decoding image...</div>}
+      {src && !ready && <div className="flex min-h-[420px] items-center justify-center text-sm text-slate-500">Decoding image...</div>}
       
       {compare && mode !== "original" && ready && (
-        <div className="pointer-events-none absolute left-3 top-3 rounded-full bg-black/60 px-3 py-1 text-[11px] font-medium tracking-wide text-white/80 backdrop-blur">LEFT: original | RIGHT: processed</div>
+        <div className="pointer-events-none absolute left-3 top-3 rounded-full bg-white/80 px-3 py-1 text-[11px] font-medium tracking-wide text-slate-900/80 backdrop-blur">LEFT: original | RIGHT: processed</div>
       )}
     </div>
   );
