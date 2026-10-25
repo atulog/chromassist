@@ -35,15 +35,18 @@ function makeTestImage(): string {
 }
 export default function App() {
   const [showLanding, setShowLanding] = useState(true);
+  useEffect(() => { localStorage.setItem('cvd', cvd); }, [cvd]);
+  useEffect(() => { localStorage.setItem('severity', severity.toString()); }, [severity]);
+  useEffect(() => { localStorage.setItem('voiceOut', voiceOut.toString()); }, [voiceOut]);
   const [tab, setTab] = useState<Tab>("studio");
   const [src, setSrc] = useState<string | null>(null);
   const [mode, setMode] = useState<ViewMode>("simulate");
-  const [cvd, setCvd] = useState<CVDType>("deuteranopia");
-  const [severity, setSeverity] = useState(1);
+  const [cvd, setCvd] = useState<CVDType>(() => (localStorage.getItem('cvd') as CVDType) || "deuteranopia");
+  const [severity, setSeverity] = useState(() => Number(localStorage.getItem('severity')) || 1);
   const [compare, setCompare] = useState(false);
   const [picked, setPicked] = useState<RGB | null>(null);
   const [palette, setPalette] = useState<RGB[]>([]);
-  const [voiceOut, setVoiceOut] = useState(true);
+  const [voiceOut, setVoiceOut] = useState(() => localStorage.getItem('voiceOut') !== 'false');
   const [listening, setListening] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [aiText, setAiText] = useState<string | null>(null);
@@ -54,6 +57,7 @@ export default function App() {
   const flash = useCallback((msg: string) => { setToast(msg); window.setTimeout(() => setToast(null), 2200); }, []);
   const loadFile = useCallback((file: File) => {
     if (!file.type.startsWith("image/")) { flash("That file is not an image."); return; }
+    if (file.size > 10 * 1024 * 1024) { flash("Image is too large. Max size is 10MB."); return; }
     const url = URL.createObjectURL(file);
     if (prevUrl.current?.startsWith("blob:")) URL.revokeObjectURL(prevUrl.current);
     prevUrl.current = url; setSrc(url); setPicked(null); setPalette([]); setAiText(null);
