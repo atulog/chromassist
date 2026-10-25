@@ -17,7 +17,7 @@ export default function Controls({ cvd, onCvd, severity, onSeverity, mode, onMod
             <button key={t} onClick={()=>onCvd(t)} aria-pressed={active}
               className={`group rounded-2xl border px-3 py-2.5 text-left transition ${active?"border-blue-600 bg-blue-50 shadow-sm":"border-slate-200 bg-slate-50 hover:border-white/20 hover:bg-white/[0.05]"}`}>
               <div className={`text-sm font-semibold ${active?"text-slate-900":"text-slate-700"}`}>{CVD_LABELS[t]}</div>
-              <div className="mt-0.5 text-[11px] text-slate-500">{CVD_SHORT[t]}</div>
+              <div className="mt-0.5 text-[11px] text-slate-600">{CVD_SHORT[t]}</div>
             </button>
           );
         })}

@@ -17,14 +17,14 @@ export default function Docs() {
           <li><strong>Voice.</strong> The Web Speech API provides both speech synthesis and recognition.</li>
         </ul>
       </Section>
-      <Section title="4. Implementation">Images are decoded once into an offscreen canvas capped at 1400 px on the long edge. Transformations are applied per-frame over a typed Uint8ClampedArray, using precomputed lookup tables for sRGBtolinear conversion. Dominant colours are extracted with k-means (k = 7, 14 iterations) over a 72Ã-72 downsample.</Section>
-      <Section title="5. Evaluation">Simulated output was checked against published reference swatches. Known confusable pairs (red/green, blue/purple, brown/orange) collapse to a CIEDE2000 distance below 10 under the matching profile. A 1400Ã-1050 image transforms in under 30 ms on a mid-range laptop.</Section>
+      <Section title="4. Implementation">Images are decoded once into an offscreen canvas capped at 1400 px on the long edge. Transformations are applied per-frame over a typed Uint8ClampedArray, using precomputed lookup tables for sRGBtolinear conversion. Dominant colours are extracted with k-means (k = 7, 14 iterations) over a 72×72 downsample.</Section>
+      <Section title="5. Evaluation">Simulated output was checked against published reference swatches. Known confusable pairs (red/green, blue/purple, brown/orange) collapse to a CIEDE2000 distance below 10 under the matching profile. A 1400×1050 image transforms in under 30 ms on a mid-range laptop.</Section>
       <Section title="6. Limitations">Linear interpolation between the identity matrix and full dichromacy is an approximation. Daltonization cannot recover information that was never encoded. Speech recognition requires a Chromium-based browser.</Section>
       <Section title="7. Future work">Per-region segmentation, a saved profile with persistent preferences, and optional server-side vision-language descriptions for whole-image summaries.</Section>
       <Section title="References">
         <ol className="list-decimal space-y-1.5 pl-5 text-sm">
           <li>Machado, Oliveira &amp; Fernandes (2009). IEEE TVCG, 15(6), 1291-1298.</li>
-          <li>ViÃ©not, Brettel &amp; Mollon (1999). Color Research &amp; Application, 24(4), 243-252.</li>
+          <li>Viénot, Brettel &amp; Mollon (1999). Color Research &amp; Application, 24(4), 243-252.</li>
           <li>Sharma, Wu &amp; Dalal (2005). Color Research &amp; Application, 30(1), 21-30.</li>
           <li>W3C (2018). WCAG 2.1, SC 1.4.3.</li>
         </ol>

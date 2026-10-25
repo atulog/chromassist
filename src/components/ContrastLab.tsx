@@ -37,7 +37,7 @@ export default function ContrastLab({ palette }: Props) {
             <div className="mb-1.5 text-[11px] uppercase tracking-[0.12em] text-slate-500">From image palette</div>
             <div className="flex gap-1.5">
               {palette.map((c, i) => (
-                <button key={`${hexOf(c)}-${i}`} onClick={()=>setA(c)} onContextMenu={(e)=>{e.preventDefault();setB(c);}} title={`${hexOf(c)} â€” click for foreground, right-click for background`} className="h-7 flex-1 rounded-md ring-1 ring-white/10 transition hover:ring-white/40" style={{ backgroundColor: hexOf(c) }} />
+                <button key={`${hexOf(c)}-${i}`} onClick={()=>setA(c)} onContextMenu={(e)=>{e.preventDefault();setB(c);}} title={`${hexOf(c)} — click for foreground, right-click for background`} className="h-7 flex-1 rounded-md ring-1 ring-white/10 transition hover:ring-white/40" style={{ backgroundColor: hexOf(c) }} />
               ))}
             </div>
           </div>

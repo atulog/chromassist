@@ -1,12 +1,14 @@
 import type { CVDType, RGB } from './color';
 import { closestName, hexOf } from './color';
 
+const TIMEOUT_MS = 60_000;
+
 async function imageToBase64(src: string): Promise<{ base64: string; mimeType: string }> {
   const img = new Image();
   img.crossOrigin = 'anonymous';
   await new Promise<void>((res, rej) => {
     img.onload = () => res();
-    img.onerror = () => rej(new Error('Failed to load image'));
+    img.onerror = () => rej(new Error('That image could not be loaded for AI analysis.'));
     img.src = src;
   });
 
@@ -20,11 +22,21 @@ async function imageToBase64(src: string): Promise<{ base64: string; mimeType: s
   return { base64: dataUrl.split(',')[1], mimeType: 'image/png' };
 }
 
+/** Human-readable text for a failed /api/describe call. */
+function friendlyError(status: number, body: any): string {
+  if (status === 503) return 'The AI model is busy or not configured on this deployment. Everything else in the Studio keeps working without it.';
+  if (status === 429) return 'The AI service is rate limited right now. Try again in a minute.';
+  if (status >= 500) return 'The AI service is unavailable right now. Nothing else in the Studio is affected.';
+  return body?.error || `The AI request failed (HTTP ${status}).`;
+}
+
 export async function describeImageWithAI(args: {
   imageSrc: string;
   cvd: CVDType;
   severity: number;
   picked: RGB | null;
+  /** Lets the UI cancel an in-flight request. */
+  signal?: AbortSignal;
 }): Promise<string> {
   const { base64, mimeType } = await imageToBase64(args.imageSrc);
 
@@ -37,17 +49,40 @@ export async function describeImageWithAI(args: {
     name: args.picked ? closestName(args.picked).name : undefined,
   };
 
-  const res = await fetch('/api/describe', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  const controller = new AbortController();
+  let timedOut = false;
+  const onAbort = () => controller.abort();
+  args.signal?.addEventListener('abort', onAbort);
+  const timer = setTimeout(() => { timedOut = true; controller.abort(); }, TIMEOUT_MS);
 
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new Error(body.error || `Server responded ${res.status}`);
+  try {
+    const res = await fetch('/api/describe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new Error(friendlyError(res.status, body));
+    }
+
+    const data = (await res.json()) as { text?: string };
+    const text = data.text?.trim();
+    if (!text) throw new Error('The AI service returned an empty answer.');
+    return text;
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new Error(
+        timedOut
+          ? `The AI model did not answer within ${TIMEOUT_MS / 1000} seconds. Try again, or use the colour readout — it needs no network.`
+          : 'AI request cancelled.',
+      );
+    }
+    throw err instanceof Error ? err : new Error('The AI request failed.');
+  } finally {
+    clearTimeout(timer);
+    args.signal?.removeEventListener('abort', onAbort);
   }
-
-  const data = (await res.json()) as { text: string };
-  return data.text;
 }

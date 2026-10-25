@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Check, Copy, Droplets } from "lucide-react";
 import { closestName, contrastRatio, describeColor, hexOf, hslOf, readableOn, rgbOf, simulateRgb, type CVDType, type RGB } from "@/lib/color";
 type Props = { picked: RGB|null; cvd: CVDType; severity: number; palette: RGB[]; onSelect:(rgb:RGB)=>void };
@@ -30,6 +30,7 @@ export default function Readout({ picked, cvd, severity, palette, onSelect }: Pr
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="flex h-24 flex-col justify-end rounded-2xl p-3 ring-1 ring-white/10" style={{ backgroundColor: hex, color: `rgb(${fg.r},${fg.g},${fg.b})` }}>
+          <span className="text-[10px] uppercase tracking-[0.12em] opacity-70">True colour</span>
           <span className="font-mono text-sm font-semibold tracking-tight">{hex}</span>
         </div>
         <div className="flex h-24 flex-col justify-end rounded-2xl p-3 ring-1 ring-white/10" style={{ backgroundColor: `rgb(${seen.r},${seen.g},${seen.b})`, color: `rgb(${readableOn(seen).r},${readableOn(seen).g},${readableOn(seen).b})` }}>
@@ -37,10 +38,10 @@ export default function Readout({ picked, cvd, severity, palette, onSelect }: Pr
           <span className="font-mono text-sm font-semibold tracking-tight">{hexOf(seen)}</span>
         </div>
       </div>
-      <p className="mt-3 text-sm text-slate-700"><span className="font-semibold text-slate-900">{name.name}</span><span className="text-slate-500"> | {seenName.name} under this profile</span></p>
+      <p aria-live="polite" aria-atomic="true" className="mt-3 text-sm text-slate-700"><span className="font-semibold text-slate-900">{name.name}</span><span className="text-slate-500"> | reads as {seenName.name} for this profile</span></p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Chip label="RGB" value={rgbOf(picked)} />
-        <Chip label="HSL" value={`${Math.round(hsl.h)}Ã‚Â deg ${Math.round(hsl.s*100)}% ${Math.round(hsl.l*100)}%`} />
+        <Chip label="HSL" value={`${Math.round(hsl.h)}° ${Math.round(hsl.s*100)}% ${Math.round(hsl.l*100)}%`} />
         <Chip label="On white" value={`${vsWhite.toFixed(2)}:1`} />
         <Chip label="On black" value={`${vsBlack.toFixed(2)}:1`} />
       </div>

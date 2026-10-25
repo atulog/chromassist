@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageOff } from "lucide-react";
 import { transformImageData, type CVDType, type RGB, type ViewMode } from "@/lib/color";
 import { extractPalette } from "@/lib/palette";
@@ -147,7 +147,7 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
         onPointerLeave={handlePointerLeave}
         onPointerDown={pickAt} 
         onKeyDown={onKeyDown}
-        className={`block max-h-[68vh] w-full object-contain ${ready ? "cursor-crosshair" : "hidden"}`} 
+        className={`block h-auto max-h-[68vh] w-auto max-w-full object-contain ${ready ? "cursor-crosshair" : "hidden"}`} 
       />
 
       {crosshair && ready && (

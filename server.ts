@@ -1,4 +1,4 @@
-﻿import dotenv from 'dotenv';
+import dotenv from 'dotenv';
 dotenv.config({ path: ['.env.local', '.env'] });
 
 import express from 'express';
@@ -11,9 +11,12 @@ const PORT = Number(process.env.PORT) || 3001;
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-  console.warn('[chromassist] GEMINI_API_KEY not set Ã¢â‚¬â€ /api/describe will fail. Add it to .env.local');
+  console.warn('[chromassist] GEMINI_API_KEY not set — /api/describe will fail. Add it to .env.local');
 }
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
+
+// Allow overriding the model without a code change (Gemini model names move quickly).
+const MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
 const app = express();
 app.use(express.json({ limit: '25mb' }));
@@ -41,6 +44,12 @@ app.post('/api/describe', async (req, res) => {
 
     if (!imageBase64) return res.status(400).json({ error: 'imageBase64 is required' });
 
+    // Accept either raw base64 or a full data URL from any client.
+    const data = String(imageBase64).replace(/^data:[^;]+;base64,/, '');
+    if (!/^[A-Za-z0-9+/=\s]+$/.test(data)) {
+      return res.status(400).json({ error: 'imageBase64 is not valid base64.' });
+    }
+
     const profile = CVD_NAMES[cvd ?? ''] ?? 'color vision deficiency';
     const sev = typeof severity === 'number' ? Math.round(severity * 100) : 100;
     const pick = hex ? `They last picked ${hex}${name ? ` (${name})` : ''}.` : '';
@@ -49,18 +58,18 @@ app.post('/api/describe', async (req, res) => {
 
 Look at the attached image and reply in 2-3 short sentences:
 1. Which specific elements or color pairs in this image are likely to look confusing or identical for this user.
-2. One concrete, actionable suggestion to tell them apart (e.g. use the label text, shape, or position Ã¢â‚¬â€ not just color).
+2. One concrete, actionable suggestion to tell them apart (e.g. use the label text, shape, or position — not just color).
 
 Be specific about what is actually in the image. Do not include disclaimers. Do not say "I can see". Do not use bullet points.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-3.8-flash',
+      model: MODEL,
       contents: [
         {
           role: 'user',
           parts: [
             { text: prompt },
-            { inlineData: { mimeType: mimeType || 'image/png', data: imageBase64 } },
+            { inlineData: { mimeType: mimeType || 'image/png', data } },
           ],
         },
       ],
@@ -70,7 +79,14 @@ Be specific about what is actually in the image. Do not include disclaimers. Do 
     res.json({ text });
   } catch (err) {
     console.error('[chromassist] /api/describe failed:', err);
-    res.status(500).json({ error: err instanceof Error ? err.message : 'Unknown error' });
+    const message = err instanceof Error ? err.message : String(err);
+    // Gemini reports capacity problems as UNAVAILABLE / "high demand".
+    const overloaded = /UNAVAILABLE|high demand|overloaded|RESOURCE_EXHAUSTED|rate/i.test(message);
+    res.status(overloaded ? 503 : 500).json({
+      error: overloaded
+        ? 'The vision model is busy right now. Try again shortly — the Studio tools keep working offline.'
+        : message,
+    });
   }
 });
 
