@@ -1,0 +1,6 @@
+{
+  "name": "ChromAssist â€” AI-Based Color Vision Assistance System",
+  "description": "Browser-based color vision assistive application featuring interactive image region color detection, CVD profile recoloring, Daltonization preview, AI descriptions, and academic mini-project documentation.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
