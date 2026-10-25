@@ -107,31 +107,31 @@ export default function App() {
   return (
     <div className="flex min-h-full flex-col">
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) loadFile(f); e.target.value = ""; }} />
-      <header className="sticky top-0 z-30 border-b border-slate-200 bg-[#F8FAFC]/70 backdrop-blur-xl">
+      <header className="sticky top-0 z-30 border-b border-white/10 bg-void/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent2 shadow-lg shadow-accent/25"><Sparkles className="h-4 w-4 text-slate-900" /></span>
-            <div className="leading-tight"><div className="text-sm font-semibold tracking-tight text-slate-900">ChromAssist</div><div className="hidden text-[11px] text-slate-500 sm:block">Colour vision assistance</div></div>
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-accent to-accent2 shadow-lg shadow-accent/25"><Sparkles className="h-4 w-4 text-white" /></span>
+            <div className="leading-tight"><div className="text-sm font-semibold tracking-tight text-white">ChromAssist</div><div className="hidden text-[11px] text-muted sm:block">Colour vision assistance</div></div>
           </div>
-          <nav className="ml-4 hidden items-center gap-1 rounded-xl bg-slate-100 p-1 ring-1 ring-white/8 md:flex">
+          <nav className="ml-4 hidden items-center gap-1 rounded-xl bg-white/10 p-1 ring-1 ring-white/8 md:flex">
             {TABS.map(({ id, label, icon: Icon }) => (
-              <button key={id} onClick={() => setTab(id)} className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${tab === id ? "bg-slate-200 text-slate-900" : "text-slate-500 hover:text-slate-800"}`}><Icon className="h-3.5 w-3.5" />{label}</button>
+              <button key={id} onClick={() => setTab(id)} className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${tab === id ? "bg-white/20 text-white" : "text-muted hover:text-zinc-200"}`}><Icon className="h-3.5 w-3.5" />{label}</button>
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-1.5">
-            <button onClick={toggleVoice} className={`flex h-9 items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition ${voiceOut ? "border-accent/40 bg-accent/15 text-slate-900" : "border-slate-200 text-slate-500 hover:text-slate-800"}`}>
+            <button onClick={toggleVoice} className={`flex h-9 items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition ${voiceOut ? "border-accent/40 bg-accent/15 text-white" : "border-white/10 text-muted hover:text-zinc-200"}`}>
               {voiceOut ? <Volume2 className="h-3.5 w-3.5" /> : <VolumeX className="h-3.5 w-3.5" />}<span className="hidden sm:inline">{voiceOut ? "Voice on" : "Voice off"}</span>
             </button>
-            <button onClick={toggleMic} disabled={!micSupported} className={`relative flex h-9 items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition disabled:opacity-40 ${listening ? "border-rose-400/50 bg-rose-500/15 text-rose-200" : "border-slate-200 text-slate-500 hover:text-slate-800"}`}>
+            <button onClick={toggleMic} disabled={!micSupported} className={`relative flex h-9 items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition disabled:opacity-40 ${listening ? "border-rose-400/50 bg-rose-500/15 text-rose-200" : "border-white/10 text-muted hover:text-zinc-200"}`}>
               {listening && <span className="absolute inset-0 -z-10 rounded-xl bg-rose-500/20 animate-ring" aria-hidden />}
               {listening ? <Mic className="h-3.5 w-3.5" /> : <MicOff className="h-3.5 w-3.5" />}<span className="hidden sm:inline">{listening ? "Listening" : "Commands"}</span>
             </button>
             <button onClick={() => fileRef.current?.click()} className="flex h-9 items-center gap-1.5 rounded-xl bg-white px-3.5 text-xs font-semibold text-void transition hover:bg-zinc-200"><ImageIcon className="h-3.5 w-3.5" /><span className="hidden sm:inline">Upload</span></button>
           </div>
         </div>
-        <nav className="flex gap-1 overflow-x-auto border-t border-slate-200 px-4 py-2 md:hidden">
+        <nav className="flex gap-1 overflow-x-auto border-t border-white/10 px-4 py-2 md:hidden">
           {TABS.map(({ id, label, icon: Icon }) => (
-            <button key={id} onClick={() => setTab(id)} className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${tab === id ? "bg-slate-200 text-slate-900" : "text-slate-500"}`}><Icon className="h-3.5 w-3.5" />{label}</button>
+            <button key={id} onClick={() => setTab(id)} className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${tab === id ? "bg-white/20 text-white" : "text-muted"}`}><Icon className="h-3.5 w-3.5" />{label}</button>
           ))}
         </nav>
       </header>
@@ -141,26 +141,26 @@ export default function App() {
             <div className="space-y-4">
               <Stage src={src} mode={mode} cvd={cvd} severity={severity} compare={compare} onPick={handlePick} onLoad={handleLoad} onDropFile={loadFile} onRequestUpload={() => fileRef.current?.click()} />
               <div className="flex flex-wrap items-center gap-2">
-                <button onClick={() => fileRef.current?.click()} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100"><ImageIcon className="h-3.5 w-3.5" />Upload</button>
-                <button onClick={() => { const input = document.createElement("input"); input.type = "file"; input.accept = "image/*"; input.capture = "environment"; input.onchange = () => { const f = input.files?.[0]; if (f) loadFile(f); }; input.click(); }} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100"><Camera className="h-3.5 w-3.5" />Camera</button>
-                <button onClick={loadSample} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100"><Sparkles className="h-3.5 w-3.5" />Test image</button>
-                <button onClick={runAiDescribe} disabled={!src || aiLoading} className="flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/15 px-3.5 py-2 text-xs font-medium text-slate-900 transition hover:bg-accent/25 disabled:opacity-40"><Sparkles className="h-3.5 w-3.5" />{aiLoading ? "ThinkingÃ¢â‚¬Â¦" : "Ask AI"}</button>
-                {src && (<button onClick={() => { if (prevUrl.current?.startsWith("blob:")) URL.revokeObjectURL(prevUrl.current); prevUrl.current = null; setSrc(null); setPicked(null); setPalette([]); setAiText(null); }} className="flex items-center gap-2 rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"><X className="h-3.5 w-3.5" />Clear</button>)}
-                <span className="ml-auto hidden text-[11px] text-slate-500 sm:block">Drop | paste | or use arrow keys on the canvas</span>
+                <button onClick={() => fileRef.current?.click()} className="flex items-center gap-2 rounded-xl border border-white/10 px-3.5 py-2 text-xs font-medium text-zinc-300 transition hover:bg-white/10"><ImageIcon className="h-3.5 w-3.5" />Upload</button>
+                <button onClick={() => { const input = document.createElement("input"); input.type = "file"; input.accept = "image/*"; input.capture = "environment"; input.onchange = () => { const f = input.files?.[0]; if (f) loadFile(f); }; input.click(); }} className="flex items-center gap-2 rounded-xl border border-white/10 px-3.5 py-2 text-xs font-medium text-zinc-300 transition hover:bg-white/10"><Camera className="h-3.5 w-3.5" />Camera</button>
+                <button onClick={loadSample} className="flex items-center gap-2 rounded-xl border border-white/10 px-3.5 py-2 text-xs font-medium text-zinc-300 transition hover:bg-white/10"><Sparkles className="h-3.5 w-3.5" />Test image</button>
+                <button onClick={runAiDescribe} disabled={!src || aiLoading} className="flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/15 px-3.5 py-2 text-xs font-medium text-white transition hover:bg-accent/25 disabled:opacity-40"><Sparkles className="h-3.5 w-3.5" />{aiLoading ? "ThinkingÃ¢â‚¬Â¦" : "Ask AI"}</button>
+                {src && (<button onClick={() => { if (prevUrl.current?.startsWith("blob:")) URL.revokeObjectURL(prevUrl.current); prevUrl.current = null; setSrc(null); setPicked(null); setPalette([]); setAiText(null); }} className="flex items-center gap-2 rounded-xl border border-white/10 px-3.5 py-2 text-xs font-medium text-muted transition hover:bg-white/10 hover:text-zinc-200"><X className="h-3.5 w-3.5" />Clear</button>)}
+                <span className="ml-auto hidden text-[11px] text-muted sm:block">Drop | paste | or use arrow keys on the canvas</span>
               </div>
             </div>
             <aside className="space-y-4 lg:sticky lg:top-[76px] lg:self-start">
               <Controls cvd={cvd} onCvd={setCvd} severity={severity} onSeverity={setSeverity} mode={mode} onMode={setMode} compare={compare} onCompare={setCompare} />
               <Readout picked={picked} cvd={cvd} severity={severity} palette={palette} onSelect={(c) => { setPicked(c); setTab("lab"); }} />
-              {aiText && (<section className="animate-rise rounded-3xl glass p-5"><div className="mb-2 flex items-center justify-between"><h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-accent">AI explanation</h2><button onClick={() => setAiText(null)} className="text-[11px] text-slate-500 hover:text-slate-800">Dismiss</button></div><p className="text-sm leading-relaxed text-slate-600">{aiText}</p></section>)}
+              {aiText && (<section className="animate-rise rounded-3xl glass p-5"><div className="mb-2 flex items-center justify-between"><h2 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-accent">AI explanation</h2><button onClick={() => setAiText(null)} className="text-[11px] text-muted hover:text-zinc-200">Dismiss</button></div><p className="text-sm leading-relaxed text-zinc-300">{aiText}</p></section>)}
             </aside>
           </div>
         )}
         {tab === "lab" && <div key="lab" className="animate-rise"><ContrastLab palette={palette} /></div>}
         {tab === "docs" && <div key="docs" className="animate-rise"><Docs /></div>}
       </main>
-      <footer className="border-t border-slate-200 px-4 py-5 sm:px-6"><div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 text-[11px] text-slate-500"><span>ChromAssist | runs entirely in your browser | no image upload</span><span className="ml-auto flex items-center gap-1.5"><Github className="h-3.5 w-3.5" />MIT licensed</span></div></footer>
-      {toast && (<div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-rise rounded-xl border border-slate-300 bg-white/95 px-4 py-2.5 text-xs text-slate-800 shadow-2xl backdrop-blur">{toast}</div>)}
+      <footer className="border-t border-white/10 px-4 py-5 sm:px-6"><div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 text-[11px] text-muted"><span>ChromAssist | runs entirely in your browser | no image upload</span><span className="ml-auto flex items-center gap-1.5"><Github className="h-3.5 w-3.5" />MIT licensed</span></div></footer>
+      {toast && (<div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-rise rounded-xl border border-white/20 bg-white/95 px-4 py-2.5 text-xs text-zinc-200 shadow-2xl backdrop-blur">{toast}</div>)}
     </div>
   );
 }
