@@ -11,7 +11,7 @@ export default function Readout({ picked, cvd, severity, palette, onSelect }: Pr
     return (
       <section className="rounded-3xl glass p-5">
         <h2 className="mb-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Detected colour</h2>
-        <p className="mt-3 text-sm leading-relaxed text-muted">Click anywhere on the image Ã¢â‚¬â€ or move the keyboard cursor with the arrow keys and press Enter Ã¢â‚¬â€ to identify a colour.</p>
+        <p className="mt-3 text-sm leading-relaxed text-muted">Click anywhere on the image - or move the keyboard cursor with the arrow keys and press Enter - to identify a colour.</p>
       </section>
     );
   }
@@ -37,7 +37,7 @@ export default function Readout({ picked, cvd, severity, palette, onSelect }: Pr
           <span className="font-mono text-sm font-semibold tracking-tight">{hexOf(seen)}</span>
         </div>
       </div>
-      <p className="mt-3 text-sm text-zinc-300"><span className="font-semibold text-white">{name.name}</span><span className="text-muted"> Ã‚Â· {seenName.name} under this profile</span></p>
+      <p className="mt-3 text-sm text-zinc-300"><span className="font-semibold text-white">{name.name}</span><span className="text-muted"> | {seenName.name} under this profile</span></p>
       <div className="mt-3 grid grid-cols-2 gap-2">
         <Chip label="RGB" value={rgbOf(picked)} />
         <Chip label="HSL" value={`${Math.round(hsl.h)}Ã‚Â deg ${Math.round(hsl.s*100)}% ${Math.round(hsl.l*100)}%`} />

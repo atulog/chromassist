@@ -141,7 +141,7 @@ export default function App() {
                 <button onClick={loadSample} className="flex items-center gap-2 rounded-xl border border-white/10 px-3.5 py-2 text-xs font-medium text-zinc-300 transition hover:bg-white/5"><Sparkles className="h-3.5 w-3.5" />Test image</button>
                 <button onClick={runAiDescribe} disabled={!src || aiLoading} className="flex items-center gap-2 rounded-xl border border-accent/40 bg-accent/15 px-3.5 py-2 text-xs font-medium text-white transition hover:bg-accent/25 disabled:opacity-40"><Sparkles className="h-3.5 w-3.5" />{aiLoading ? "ThinkingÃ¢â‚¬Â¦" : "Ask AI"}</button>
                 {src && (<button onClick={() => { if (prevUrl.current?.startsWith("blob:")) URL.revokeObjectURL(prevUrl.current); prevUrl.current = null; setSrc(null); setPicked(null); setPalette([]); setAiText(null); }} className="flex items-center gap-2 rounded-xl border border-white/10 px-3.5 py-2 text-xs font-medium text-muted transition hover:bg-white/5 hover:text-zinc-200"><X className="h-3.5 w-3.5" />Clear</button>)}
-                <span className="ml-auto hidden text-[11px] text-muted sm:block">Drop Ã‚Â· paste Ã‚Â· or use arrow keys on the canvas</span>
+                <span className="ml-auto hidden text-[11px] text-muted sm:block">Drop | paste | or use arrow keys on the canvas</span>
               </div>
             </div>
             <aside className="space-y-4 lg:sticky lg:top-[76px] lg:self-start">
@@ -154,7 +154,7 @@ export default function App() {
         {tab === "lab" && <div key="lab" className="animate-rise"><ContrastLab palette={palette} /></div>}
         {tab === "docs" && <div key="docs" className="animate-rise"><Docs /></div>}
       </main>
-      <footer className="border-t border-white/8 px-4 py-5 sm:px-6"><div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 text-[11px] text-muted"><span>ChromAssist Ã‚Â· runs entirely in your browser Ã‚Â· no image upload</span><span className="ml-auto flex items-center gap-1.5"><Github className="h-3.5 w-3.5" />MIT licensed</span></div></footer>
+      <footer className="border-t border-white/8 px-4 py-5 sm:px-6"><div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-3 text-[11px] text-muted"><span>ChromAssist | runs entirely in your browser | no image upload</span><span className="ml-auto flex items-center gap-1.5"><Github className="h-3.5 w-3.5" />MIT licensed</span></div></footer>
       {toast && (<div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 animate-rise rounded-xl border border-white/12 bg-panel/95 px-4 py-2.5 text-xs text-zinc-200 shadow-2xl backdrop-blur">{toast}</div>)}
     </div>
   );
