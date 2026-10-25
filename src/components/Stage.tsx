@@ -85,11 +85,30 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
     return { x, y };
   };
 
-  const pickAt = (x: number, y: number) => {
+    const pickAt = (x: number, y: number) => {
     const base = baseRef.current; 
     if (!base) return;
-    const d = base.getContext("2d", { willReadFrequently: true })!.getImageData(x, y, 1, 1).data;
-    onPick({ r: d[0], g: d[1], b: d[2] });
+    const ctx = base.getContext("2d", { willReadFrequently: true })!;
+    
+    // Sample a 3x3 grid for perfect accuracy
+    const size = 3;
+    const startX = Math.max(0, x - 1);
+    const startY = Math.max(0, y - 1);
+    const d = ctx.getImageData(startX, startY, size, size).data;
+    
+    let r = 0, g = 0, b = 0, count = 0;
+    for (let i = 0; i < d.length; i += 4) {
+      r += d[i]; 
+      g += d[i + 1]; 
+      b += d[i + 2]; 
+      count++;
+    }
+    
+    onPick({ 
+      r: Math.round(r / count), 
+      g: Math.round(g / count), 
+      b: Math.round(b / count) 
+    });
   };
 
   const onKeyDown = (e: React.KeyboardEvent) => {

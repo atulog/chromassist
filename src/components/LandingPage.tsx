@@ -1,6 +1,11 @@
 import { ArrowRight, Camera, Image as ImageIcon, Link as LinkIcon, Mic, Moon, ShieldCheck, Sun, CheckCircle2 } from "lucide-react";
 
 export default function LandingPage({ onEnterApp }: { onEnterApp: () => void }) {
+  const handleMockupClick = () => {
+    alert("Redirecting you to the main ChromAssist Studio...");
+    onEnterApp();
+  };
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans">
       {/* 1. Navbar */}
@@ -77,9 +82,9 @@ export default function LandingPage({ onEnterApp }: { onEnterApp: () => void }) 
           <div className="bg-[#F8FAFC] rounded-3xl border border-slate-200 p-6 shadow-sm">
             {/* Tabs */}
             <div className="flex gap-4 mb-4 bg-slate-100 p-1.5 rounded-xl w-fit">
-              <button className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm text-sm font-semibold text-slate-900"><Camera className="w-4 h-4" /> Camera</button>
-              <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700"><ImageIcon className="w-4 h-4" /> Upload</button>
-              <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700"><LinkIcon className="w-4 h-4" /> Image URL</button>
+              <button onClick={handleMockupClick} className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm text-sm font-semibold text-slate-900"><Camera className="w-4 h-4" /> Camera</button>
+              <button onClick={handleMockupClick} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700"><ImageIcon className="w-4 h-4" /> Upload</button>
+              <button onClick={handleMockupClick} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:text-slate-700"><LinkIcon className="w-4 h-4" /> Image URL</button>
             </div>
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -93,7 +98,7 @@ export default function LandingPage({ onEnterApp }: { onEnterApp: () => void }) 
                   <div className="w-32 h-32 border-2 border-white rounded-xl"></div>
                 </div>
                 <div className="relative z-10 flex justify-center gap-4 mt-4">
-                  <button className="w-12 h-12 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-lg"><Camera className="w-5 h-5" /></button>
+                  <button onClick={handleMockupClick} className="w-12 h-12 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-lg"><Camera className="w-5 h-5" /></button>
                   <button className="w-12 h-12 rounded-full bg-red-500 text-white flex items-center justify-center shadow-lg"><span className="w-4 h-4 bg-white rounded-sm" /></button>
                   <button className="w-12 h-12 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-lg">↻</button>
                 </div>
