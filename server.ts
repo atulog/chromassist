@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+﻿import dotenv from 'dotenv';
 dotenv.config({ path: ['.env.local', '.env'] });
 
 import express from 'express';
@@ -11,7 +11,7 @@ const PORT = Number(process.env.PORT) || 3001;
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-  console.warn('[chromassist] GEMINI_API_KEY not set â€” /api/describe will fail. Add it to .env.local');
+  console.warn('[chromassist] GEMINI_API_KEY not set Ã¢â‚¬â€ /api/describe will fail. Add it to .env.local');
 }
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
@@ -49,12 +49,12 @@ app.post('/api/describe', async (req, res) => {
 
 Look at the attached image and reply in 2-3 short sentences:
 1. Which specific elements or color pairs in this image are likely to look confusing or identical for this user.
-2. One concrete, actionable suggestion to tell them apart (e.g. use the label text, shape, or position â€” not just color).
+2. One concrete, actionable suggestion to tell them apart (e.g. use the label text, shape, or position Ã¢â‚¬â€ not just color).
 
 Be specific about what is actually in the image. Do not include disclaimers. Do not say "I can see". Do not use bullet points.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       contents: [
         {
           role: 'user',
@@ -90,3 +90,4 @@ app.get('*', (req, res, next) => {
 app.listen(PORT, () => {
   console.log(`[chromassist] API on http://localhost:${PORT} (gemini: ${apiKey ? 'ready' : 'missing key'})`);
 });
+
