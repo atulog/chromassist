@@ -87,7 +87,12 @@ app.get('*', (req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`[chromassist] API on http://localhost:${PORT} (gemini: ${apiKey ? 'ready' : 'missing key'})`);
-});
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`[chromassist] API on http://localhost:${PORT} (gemini: ${apiKey ? 'ready' : 'missing key'})`);
+  });
+}
+export default app;
+
 
