@@ -5,7 +5,7 @@ import Controls from "@/components/Controls";
 import Readout from "@/components/Readout";
 import ContrastLab from "@/components/ContrastLab";
 import Docs from "@/components/Docs";
-import { describeColor, type CVDType, type RGB, type ViewMode } from "@/lib/color";
+import { closestName, describeColor, type CVDType, type RGB, type ViewMode } from "@/lib/color";
 import { createRecognizer, speak, stopSpeaking, type Recognizer } from "@/lib/voice";
 import { describeImageWithAI } from "@/lib/ai";
 type Tab = "studio" | "lab" | "docs";
@@ -56,7 +56,7 @@ export default function App() {
     if (prevUrl.current?.startsWith("blob:")) URL.revokeObjectURL(prevUrl.current);
     prevUrl.current = url; setSrc(url); setPicked(null); setPalette([]); setAiText(null);
   }, [flash]);
-  const handlePick = useCallback((rgb: RGB) => { setPicked(rgb); if (voiceOut) speak(describeColor(rgb, cvd, severity)); }, [voiceOut, cvd, severity]);
+  const handlePick = useCallback((rgb: RGB) => { setPicked(rgb); if (voiceOut) speak(closestName(rgb).name); }, [voiceOut, cvd, severity]);
   const handleLoad = useCallback((p: RGB[]) => setPalette(p), []);
   useEffect(() => {
     const onPaste = (e: ClipboardEvent) => {

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ImageOff } from "lucide-react";
 import { transformImageData, type CVDType, type RGB, type ViewMode } from "@/lib/color";
 import { extractPalette } from "@/lib/palette";
-const MAX_EDGE = 1400, MAG_HALF = 12, MAG_PX = 168;
+const MAX_EDGE = 1400, MAG_HALF = 6, MAG_PX = 120;
 type Props = { src: string|null; mode: ViewMode; cvd: CVDType; severity: number; compare: boolean; onPick:(rgb:RGB)=>void; onLoad:(p:RGB[])=>void; onDropFile:(f:File)=>void; onRequestUpload:()=>void };
 type Cursor = { cx:number; cy:number; x:number; y:number } | null;
 export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoad, onDropFile, onRequestUpload }: Props) {
