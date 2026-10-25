@@ -85,9 +85,6 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const view = viewRef.current; 
     if (!view) return;
-    const rect = view.getBoundingClientRect();
-    
-    // Calculate position relative to the container for the visual crosshair
     const wrapRect = wrapRef.current?.getBoundingClientRect();
     if (wrapRect) {
       setCrosshair({
@@ -106,13 +103,11 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
     
     const rect = view.getBoundingClientRect();
     
-    // Perfectly map display coordinates to source image coordinates
     const x = Math.floor(((e.clientX - rect.left) / rect.width) * base.width);
     const y = Math.floor(((e.clientY - rect.top) / rect.height) * base.height);
     
     if (x < 0 || y < 0 || x >= base.width || y >= base.height) return;
 
-    // Read exactly one source-image pixel
     const ctx = base.getContext("2d", { willReadFrequently: true })!;
     const d = ctx.getImageData(x, y, 1, 1).data;
     onPick({ r: d[0], g: d[1], b: d[2] });
@@ -122,15 +117,12 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
     if (!ready) return; 
     const view = viewRef.current; 
     if (!view) return;
-    const step = e.shiftKey ? 10 : 1;
     let cx = view.width >> 1, cy = view.height >> 1;
     
-    // (Optional) You can expand keyboard navigation to track the crosshair here
     switch (e.key) {
       case "Enter": 
       case " ": 
         e.preventDefault(); 
-        // Dummy event for keyboard picking
         const rect = view.getBoundingClientRect();
         pickAt({ clientX: rect.left + cx, clientY: rect.top + cy } as any); 
         return;
@@ -158,7 +150,6 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
         className={`block max-h-[68vh] w-full object-contain ${ready ? "cursor-crosshair" : "hidden"}`} 
       />
 
-      {/* --- The requested custom crosshair overlay --- */}
       {crosshair && ready && (
         <div
           aria-hidden="true"
@@ -180,12 +171,15 @@ export default function Stage({ src, mode, cvd, severity, compare, onPick, onLoa
 
       {!src && (
         <button onClick={onRequestUpload} className="flex min-h-[420px] w-full flex-col items-center justify-center gap-4 p-10 text-center transition hover:bg-white/[0.02]">
-          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10"><ImageOff className="h-7 w-7 text-muted" /></span>
-          <span className="text-xl font-bold text-slate-900">Start exploring your image</span>
-          <span className="max-w-md text-sm text-slate-500 leading-relaxed">
+          <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10">
+            <ImageOff className="h-7 w-7 text-muted" />
+          </span>
+          {/* FIXED TEXT COLORS FOR DARK THEME */}
+          <span className="text-xl font-bold text-white">Start exploring your image</span>
+          <span className="max-w-md text-sm text-zinc-400 leading-relaxed">
             Upload an image to simulate color vision differences, inspect individual pixel colors, or enhance color distinctions for accessibility.
           </span>
-          <span className="mt-2 rounded-lg bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700 ring-1 ring-blue-600/20">
+          <span className="mt-2 rounded-lg bg-accent/20 px-4 py-2 text-sm font-semibold text-accent ring-1 ring-accent/30">
             Click to upload or drag & drop
           </span>
         </button>
